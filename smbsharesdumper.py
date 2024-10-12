@@ -2,7 +2,7 @@ from impacket.smbconnection import SMBConnection, SessionError, SMB2_DIALECT_002
 from impacket.examples.utils import parse_target
 from tabulate import tabulate
 from datetime import datetime
-import os, argparse
+import os, argparse, sys
 
 class computer:
     def __init__(self):
@@ -98,7 +98,6 @@ class computer:
                 items = [item for item in self.shares if item.name == sharename]
                 items[0].dump_share(localpath, level=folder + '/*')
 
-
     def upload(self, localfile, sharename='', folder=''):
         if localfile is None or sharename is None:
             print("[-] Please Provide a valid file and share name...")
@@ -110,7 +109,7 @@ class computer:
 
     def getfile(self, localpath, sharename, filename):
             if filename is None or sharename is None:
-                print("[-] Please Provide a valid filename...")
+                print("[-] Please Provide a valid sharename and filename...")
             else:
                 print(f"[+] Dumping file on {filename} in share {sharename}...")
                 items = [item for item in self.shares if item.name == sharename]
@@ -118,12 +117,11 @@ class computer:
 
 
     def mkdir(self, newfolder, sharename='', folder=''):
-
-        return 0
+        print("[+] Comming Soon!!!!")
     
     def delete(self, filename, sharename='', folder=''):
+        print("[+] Comming Soon!!!!")
 
-        return 0
 
 def file_reader_callback(filehandle):
     data = filehandle.read(1024)
@@ -240,9 +238,15 @@ def parse_arguments():
     parser.add_argument("--destination", help="Destination path")
 
     parser.add_argument('--targets-file', type=argparse.FileType('r'), help='list of ipaddress of targets')
-    args = parser.parse_args()
 
+    # If no arguments have been supplied, display help
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+
+    args = parser.parse_args()
     return args
+
 
 def targets(args):
     Targets =[]
@@ -265,6 +269,7 @@ def main():
         print("[-] Error Parsing Targets\n")
 
     for host_ip in targets_list:
+        length  = len(targets_list)
         comp = computer()
         comp.ip = host_ip
         comp.hostname = args.host if args.host else host_ip
@@ -304,7 +309,13 @@ def main():
         
         if args.dump:
             try:
-                local_path = args.destination if args.destination else '.'
+                if length == 1:
+                    local_path = args.destination if args.destination else '.'
+                    print(local_path)
+                else:
+                    local_path = args.destination + '/' + comp.hostname if args.destination else comp.hostname
+                    print(local_path)
+                    os.makedirs(os.path.dirname(local_path), exist_ok=True)
                 shares = comp.list_shares()
                 comp.shares = shares
                 comp.dump_shares(local_path, args.sharename, args.folder, args.file)
@@ -340,11 +351,12 @@ def main():
             try:
                 shares = comp.list_shares()
                 comp.shares = shares
-                comp.delete()
+                comp.delete(args.file, args.sharename, args.folder)
             except Exception as e:
                 print(f"[-] Error listing shares on {host_ip}: {e}")
 
 
+##todo: use the user class to handle authentication methodes
 class user:
     def __init__(self):
         self.username = ''
