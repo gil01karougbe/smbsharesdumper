@@ -53,6 +53,11 @@ options:
 ```
 
 ### --list-content
+```
+[[domain/]username[:password]@]<targetName or address> --list-shares --debug
+--host <HOST> --list-shares
+--targets-file <PATH> --list-shares
+```
 
 ### --dump
 ```
