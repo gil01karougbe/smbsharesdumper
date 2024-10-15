@@ -27,9 +27,9 @@ python3 smbsharesdumper.py -d DOMAIN -u USER -p PASS --targets-file /Path/To/tar
 
 ### 4-dump a single file
 ```
-python3 smbsharesdumper.py  DOMAIN/USER:PASS@IP --dump-file --share SHARE --file REMOTE_FILE --destination OUTPUT_FOLDER
+python3 smbsharesdumper.py  DOMAIN/USER:PASS@IP --dumpfile --share SHARE --file REMOTE_FILE --destination OUTPUT_FOLDER
 
-python3 smbsharesdumper.py -d DOMAIN -u USER -p PASS --host HOST --dump-file --share SHARE --file REMOTE_FILE --destination OUTPUT_FOLDER
+python3 smbsharesdumper.py -d DOMAIN -u USER -p PASS --host HOST --dumpfile --share SHARE --file REMOTE_FILE --destination OUTPUT_FOLDER
 ```
 
 ### 5-Upload a file
